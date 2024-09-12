@@ -1,0 +1,29 @@
+version: '3'
+name: 'review-query-service'
+services:
+  postgres:
+    image: postgres:16.0
+    environment:
+      POSTGRES_DB: postgresdb
+      POSTGRES_USER: postgresuser
+      POSTGRES_PASSWORD: postgrespassword
+    ports:
+      - "5427:5432"
+    volumes:
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:6.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27012:27017"
+
+volumes:
+  postgres_data:
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge

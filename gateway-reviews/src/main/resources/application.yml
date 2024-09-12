@@ -1,0 +1,68 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  main.banner-mode: off
+
+  cloud:
+    gateway:
+      routes:
+        # review command routes
+        - id: create_review
+          uri: http://localhost:8090/products/reviews
+          predicates:
+            - Path=/products/reviews
+            - Method=POST
+
+        - id: delete_review
+          uri: http://localhost:8090/reviews
+          predicates:
+            - Path=/reviews/**
+            - Method=DELETE
+
+        - id: approve_review
+          uri: http://localhost:8090/reviews/approve
+          predicates:
+            - Path=/reviews/approve/**
+            - Method=PUT
+
+        - id: reject_review
+          uri: http://localhost:8090/reviews/reject
+          predicates:
+            - Path=/reviews/reject/**
+            - Method=PUT
+
+
+        # review command routes
+        - id: get_reviews_by_user_mobile
+          uri: http://localhost:8091/reviews
+          predicates:
+            - Path=/reviews/**
+            - Method=GET
+            - name: UserAgent
+              args:
+                value: mobile
+
+        - id: get_reviews_by_user_other
+          uri: http://localhost:8092/reviews
+          predicates:
+            - Path=/reviews/**
+            - Method=GET
+
+        - id: get_pending_reviews_by_user_mobile
+          uri: http://localhost:8091/reviews/pending
+          predicates:
+            - Path=/reviews/pending/**
+            - Method=GET
+            - name: UserAgent
+              args:
+                value: mobile
+
+        - id: get_pending_reviews_by_user_other
+          uri: http://localhost:8092/reviews/pending
+          predicates:
+            - Path=/reviews/pending/**
+            - Method=GET
+

@@ -1,0 +1,91 @@
+server:
+  port: 8080
+
+backup-service:
+  url: http://localhost:8080 #backup service port
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui
+
+jwt:
+  private:
+    key: classpath:rsa.private.key
+  public:
+    key: classpath:rsa.public.key
+
+logging:
+  level:
+    com.example.demo: DEBUG
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql=true:sql:
+    init:
+      mode: never
+  multipart:
+    enabled: true
+    file-size-threshold: 2KB
+    max-file-size: 200MB
+    max-request-size: 215MB
+  file:
+    upload-dir: DEV/FileUploads
+  profiles:
+    active: bootstrap
+  database:
+    entityManager: javax.persistence.EntityManagerFactory
+    transactionManager: org.springframework.orm.jpa.JpaTransactionManager
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgresdb
+    username: postgresuser
+    password: postgrespassword
+  repositories:
+    targetPackage: postgresql #mongodb or postgresql
+  sku:
+    generator: implementation2
+  reviews:
+    recommendation: implementation2
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+#  data:
+#    mongodb:
+#      uri: mongodb://root:root@127.0.0.1:27017/acme?authSource=admin
+
+rabbitmq:
+  exchange:
+    name: acme.topic
+  products:
+    fanout-exchange: acme.product.fanout
+    name: product_queue
+    routingKey: product.*
+    events:
+      created: product.created
+      updated: product.updated
+      deleted: product.deleted
+  reviews:
+    fanout-exchange: acme.reviews.fanout
+    name: review_queue
+    routingKey: review.*
+    events:
+      created: review.created
+      updated: review.updated
+      deleted: review.deleted
+  users:
+    fanout-exchange: acme.users.fanout
+    name: users_queue
+    routingKey: users.*
+    events:
+      registered: user.registered
+  votes:
+    fanout-exchange: acme.votes.fanout
+    events:
+      registered: vote.added

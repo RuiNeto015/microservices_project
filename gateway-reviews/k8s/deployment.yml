@@ -1,0 +1,41 @@
+# pods deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: d-gateway-reviews-msvc
+  labels:
+    app: gateway-reviews-msvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-reviews-msvc
+  template:
+    metadata:
+      labels:
+        app: gateway-reviews-msvc
+    spec:
+      containers:
+        - name: gateway-reviews-msvc
+          image: gateway-reviews-msvc:1.0
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "400m"
+
+---
+# load balancer service
+apiVersion: v1
+kind: Service
+metadata:
+  name: lb-gateway-reviews-msvc
+spec:
+  selector:
+    app: gateway-reviews-msvc
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30006
